@@ -17,7 +17,9 @@ public class EmployeeManagerTest {
 
     private static Configuration config;
     private static SessionFactory factory;
-    private static Session hibernateSession;
+    private static Session session;
+
+    private EmployeeManager employeeManager;
 
     @BeforeClass
     public static void init() {
@@ -33,12 +35,14 @@ public class EmployeeManagerTest {
 
     @Before
     public void beforeTest(){
-        hibernateSession = factory.openSession();
+        session = factory.openSession();
+        employeeManager = new EmployeeManager();
+        employeeManager.setSession(session);
     }
 
     @After
     public void afterTest(){
-        hibernateSession.close();
+        session.close();
     }
 
 
@@ -47,8 +51,8 @@ public class EmployeeManagerTest {
         String employeeName = "MyEmployee";
         String employeeLocation = "Mars";
 
-        EmployeeManager.addEmployee(new Employee(employeeName,employeeLocation),hibernateSession);
-        Employee employee = EmployeeManager.getEmployeeByName(employeeName,hibernateSession);
+        employeeManager.addEmployee(new Employee(employeeName,employeeLocation));
+        Employee employee = employeeManager.getEmployeeByName(employeeName);
         assertEquals("Mars", employee.getLocation());
     }
 
